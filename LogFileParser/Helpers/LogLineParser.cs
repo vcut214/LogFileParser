@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LogFileParser.Helpers
 {
-    public static class LogLineParser
+    internal static class LogLineParser
     {
         private const string IpAddressRegex = "^(\\d+\\.){3}\\d+";
         private const string ResourceUrlSelectorRegex = "\"[A-Z]+ ([A-Za-z0-9:/.-]+) HTTP/\\d.\\d\"";
@@ -19,7 +19,7 @@ namespace LogFileParser.Helpers
         /// </summary>
         /// <param name="logLine"></param>
         /// <returns>String containing the host's IP address</returns>
-        public static string ExtractHostIpAddress(string logLine)
+        internal static string ExtractHostIpAddress(string logLine)
         {
             return Regex.Match(logLine, IpAddressRegex).Value;
         }
@@ -31,7 +31,7 @@ namespace LogFileParser.Helpers
         /// </summary>
         /// <param name="logLine"></param>
         /// <returns>String containing the accessed resource URL</returns>
-        public static string ExtractResourceUrl(string logLine)
+        internal static string ExtractResourceUrl(string logLine)
         {
             var matchGroups = Regex.Match(logLine, ResourceUrlSelectorRegex).Groups;
 
