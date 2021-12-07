@@ -21,10 +21,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ServiceTests\Test Data\ManyDifferentIpAddresses.log">
+    <None Update="ServiceTests\Test Data\ManyDifferentLogLines.log">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ServiceTests\Test Data\ManySameIpAddresses.log">
+    <None Update="ServiceTests\Test Data\ManyDistinctLogLines.log">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ServiceTests\Test Data\ManySameLogLines.log">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ServiceTests\Test Data\SingleLogLine.log">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

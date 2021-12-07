@@ -1,6 +1,7 @@
 using LogFileParser.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using System.Linq;
 
 namespace LogFileParser.Tests.ServiceTests
 {
@@ -23,10 +24,15 @@ namespace LogFileParser.Tests.ServiceTests
         {
             // Arrange
             var service = new LogStatisticsService();
-            var logString = "168.41.191.40 - - [09/Jul/2018:10:10:38 +0200] \"GET http://example.net/blog/category/meta/ HTTP/1.1\" 200 3574 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_7) AppleWebKit/534.24 (KHTML, like Gecko) RockMelt/0.9.58.494 Chrome/11.0.696.71 Safari/534.24\"";
+            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "SingleLogLine.log");
 
             // Act
-            service.ParseLogLine(logString);
+            // Read the file and display it line by line.  
+            foreach (string logLine in File.ReadLines(logFilePath))
+            {
+                if (!string.IsNullOrWhiteSpace(logLine))
+                    service.ParseLogLine(logLine);
+            }
 
             // Assert
             Assert.AreEqual(1, service.GetNumberOfDistinctIpAddresses());
@@ -37,7 +43,7 @@ namespace LogFileParser.Tests.ServiceTests
         {
             // Arrange
             var service = new LogStatisticsService();
-            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManySameIpAddresses.log");
+            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManySameLogLines.log");
 
             // Act
             // Read the file and display it line by line.  
@@ -56,7 +62,7 @@ namespace LogFileParser.Tests.ServiceTests
         {
             // Arrange
             var service = new LogStatisticsService();
-            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManyDifferentIpAddresses.log");
+            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManyDifferentLogLines.log");
 
             // Act
             // Read the file and display it line by line.  
@@ -68,6 +74,70 @@ namespace LogFileParser.Tests.ServiceTests
 
             // Assert
             Assert.AreEqual(3, service.GetNumberOfDistinctIpAddresses());
+        }
+
+        [TestMethod]
+        public void GetTopVisitedUrls_OneUrl_GetTop3()
+        {
+            // Arrange
+            var service = new LogStatisticsService();
+            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "SingleLogLine.log");
+
+            // Act
+            // Read the file and display it line by line.  
+            foreach (string logLine in File.ReadLines(logFilePath))
+            {
+                if (!string.IsNullOrWhiteSpace(logLine))
+                    service.ParseLogLine(logLine);
+            }
+
+            // Assert
+            Assert.AreEqual(1, service.GetTopVisitedUrls(3).Count());
+            Assert.AreEqual("http://example.net/blog/category/meta/", service.GetTopVisitedUrls(3).FirstOrDefault());
+        }
+
+        [TestMethod]
+        public void GetTopVisitedUrls_ManyUrlsSameRanking_GetTop3()
+        {
+            // Arrange
+            var service = new LogStatisticsService();
+            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManyDistinctLogLines.log");
+
+            // Act
+            // Read the file and display it line by line.  
+            foreach (string logLine in File.ReadLines(logFilePath))
+            {
+                if (!string.IsNullOrWhiteSpace(logLine))
+                    service.ParseLogLine(logLine);
+            }
+
+            // Assert
+            Assert.AreEqual(3, service.GetTopVisitedUrls(3).Count());
+            Assert.AreEqual("/intranet-analytics/", service.GetTopVisitedUrls(3).ElementAt(0));
+            Assert.AreEqual("http://example.net/faq/", service.GetTopVisitedUrls(3).ElementAt(1));
+            Assert.AreEqual("/this/page/does/not/exist/", service.GetTopVisitedUrls(3).ElementAt(2));
+        }
+
+        [TestMethod]
+        public void GetTopVisitedUrls_ManyUrlsDifferentRanking_GetTop3()
+        {
+            // Arrange
+            var service = new LogStatisticsService();
+            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManyDifferentLogLines.log");
+
+            // Act
+            // Read the file and display it line by line.  
+            foreach (string logLine in File.ReadLines(logFilePath))
+            {
+                if (!string.IsNullOrWhiteSpace(logLine))
+                    service.ParseLogLine(logLine);
+            }
+
+            // Assert
+            Assert.AreEqual(3, service.GetTopVisitedUrls(3).Count());
+            Assert.AreEqual("/docs/manage-websites/", service.GetTopVisitedUrls(3).ElementAt(0));
+            Assert.AreEqual("/this/page/does/not/exist/", service.GetTopVisitedUrls(3).ElementAt(1));
+            Assert.AreEqual("/intranet-analytics/", service.GetTopVisitedUrls(3).ElementAt(2));
         }
     }
 }
