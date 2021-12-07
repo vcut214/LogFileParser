@@ -10,6 +10,7 @@ namespace LogFileParser.Helpers
     public static class LogLineParser
     {
         private const string IpAddressRegex = "^(\\d+\\.){3}\\d+";
+        private const string ResourceUrlSelectorRegex = "\"[A-Z]+ ([A-Za-z0-9:/.-]+) HTTP/\\d.\\d\"";
 
         /// <summary>
         /// Method that extracts the Host IP address from the log line.
@@ -21,6 +22,23 @@ namespace LogFileParser.Helpers
         public static string ExtractHostIpAddress(string logLine)
         {
             return Regex.Match(logLine, IpAddressRegex).Value;
+        }
+
+        /// <summary>
+        /// Method that extracts the resource URL from the log line.
+        /// 
+        /// If the resource URL cannot be retrieved, this will return blank.
+        /// </summary>
+        /// <param name="logLine"></param>
+        /// <returns>String containing the accessed resource URL</returns>
+        public static string ExtractResourceUrl(string logLine)
+        {
+            var matchGroups = Regex.Match(logLine, ResourceUrlSelectorRegex).Groups;
+
+            if (matchGroups.TryGetValue("1", out Group resourceUrlMatchGroup))
+                return resourceUrlMatchGroup.Value;
+
+            return "";
         }
     }
 }
