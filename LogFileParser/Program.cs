@@ -1,20 +1,31 @@
-﻿using System;
+﻿using LogFileParser.Services;
+using System;
+using System.IO;
 
 namespace LogFileParser
 {
     public class Program
     {
-        /*
-         * The task is to parse a log file containing HTTP requests and to report on its contents. For a given log file we
-         *  want to know:
-         *  ● The number of unique IP addresses
-         *  ● The top 3 most visited URLs
-         *  ● The top 3 most active IP addresses
-        */
-
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            if (args.Length == 0)
+            {
+                Console.WriteLine("No file path argument detected!");
+                Console.WriteLine();
+                Console.WriteLine("Please use the application in this form");
+                Console.WriteLine("No file path argument detected!");
+
+            }
+            var service = new LogStatisticsService();
+            var logFilePath = args[0];
+
+            // Act
+            // Read the file and display it line by line.  
+            foreach (string logLine in File.ReadLines(logFilePath))
+            {
+                if (!string.IsNullOrWhiteSpace(logLine))
+                    service.ParseLogLine(logLine);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LogFileParser.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,8 +21,6 @@ namespace LogFileParser.Services
         private Dictionary<string, int> _ipAddressCounts;
         private Dictionary<string, int> _urlCounts;
 
-        private const string IpAddressRegex = "^(\\d+\\.){3}\\d+";
-
         public LogStatisticsService()
         {
             _ipAddressCounts = new Dictionary<string, int>();
@@ -30,7 +29,7 @@ namespace LogFileParser.Services
 
         public void ParseLogLine(string logLineString)
         {
-            string ipAddress = Regex.Match(logLineString, IpAddressRegex).Value;
+            string ipAddress = LogLineParser.ExtractHostIpAddress(logLineString);
             if (!_ipAddressCounts.ContainsKey(ipAddress))
                 _ipAddressCounts.Add(ipAddress, 0);
 
