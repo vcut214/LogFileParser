@@ -1,6 +1,7 @@
 ﻿using LogFileParser.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -19,19 +20,27 @@ namespace LogFileParser.Services
             _urlCounts = new Dictionary<string, int>();
         }
 
-        public void ParseLogLine(string logLineString)
+        public void ParseLog(string logFilePath)
         {
-            string ipAddress = LogLineParser.ExtractHostIpAddress(logLineString);
-            if (!_ipAddressCounts.ContainsKey(ipAddress))
-                _ipAddressCounts.Add(ipAddress, 0);
+            // Read log lines from the bottom up, to make the ranking calculations easier.
+            // When we rank the items later, items with similar rankings will be in chronological order (most recent first).
+            foreach (string logLineString in File.ReadLines(logFilePath).Reverse())
+            {
+                if (string.IsNullOrWhiteSpace(logLineString))
+                    continue;
 
-            _ipAddressCounts[ipAddress]++;
+                string ipAddress = LogLineParser.ExtractHostIpAddress(logLineString);
+                if (!_ipAddressCounts.ContainsKey(ipAddress))
+                    _ipAddressCounts.Add(ipAddress, 0);
 
-            string resourceUrl = LogLineParser.ExtractResourceUrl(logLineString);
-            if (!_urlCounts.ContainsKey(resourceUrl))
-                _urlCounts.Add(resourceUrl, 0);
+                _ipAddressCounts[ipAddress]++;
 
-            _urlCounts[resourceUrl]++;
+                string resourceUrl = LogLineParser.ExtractResourceUrl(logLineString);
+                if (!_urlCounts.ContainsKey(resourceUrl))
+                    _urlCounts.Add(resourceUrl, 0);
+
+                _urlCounts[resourceUrl]++;
+            }
         }
 
         /// <summary>

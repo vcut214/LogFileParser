@@ -27,12 +27,7 @@ namespace LogFileParser.Tests.ServiceTests
             var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "SingleLogLine.log");
 
             // Act
-            // Read the file and display it line by line.  
-            foreach (string logLine in File.ReadLines(logFilePath))
-            {
-                if (!string.IsNullOrWhiteSpace(logLine))
-                    service.ParseLogLine(logLine);
-            }
+            service.ParseLog(logFilePath);
 
             // Assert
             Assert.AreEqual(1, service.GetNumberOfDistinctIpAddresses());
@@ -46,12 +41,7 @@ namespace LogFileParser.Tests.ServiceTests
             var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManySameLogLines.log");
 
             // Act
-            // Read the file and display it line by line.  
-            foreach (string logLine in File.ReadLines(logFilePath))
-            {
-                if (!string.IsNullOrWhiteSpace(logLine))
-                    service.ParseLogLine(logLine);
-            }
+            service.ParseLog(logFilePath);
 
             // Assert
             Assert.AreEqual(1, service.GetNumberOfDistinctIpAddresses());
@@ -65,12 +55,7 @@ namespace LogFileParser.Tests.ServiceTests
             var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManyDifferentLogLines.log");
 
             // Act
-            // Read the file and display it line by line.  
-            foreach (string logLine in File.ReadLines(logFilePath))
-            {
-                if (!string.IsNullOrWhiteSpace(logLine))
-                    service.ParseLogLine(logLine);
-            }
+            service.ParseLog(logFilePath);
 
             // Assert
             Assert.AreEqual(3, service.GetNumberOfDistinctIpAddresses());
@@ -84,12 +69,7 @@ namespace LogFileParser.Tests.ServiceTests
             var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "SingleLogLine.log");
 
             // Act
-            // Read the file and display it line by line.  
-            foreach (string logLine in File.ReadLines(logFilePath))
-            {
-                if (!string.IsNullOrWhiteSpace(logLine))
-                    service.ParseLogLine(logLine);
-            }
+            service.ParseLog(logFilePath);
 
             // Assert
             Assert.AreEqual(1, service.GetTopVisitedUrls(3).Count());
@@ -104,18 +84,13 @@ namespace LogFileParser.Tests.ServiceTests
             var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManyDistinctLogLines.log");
 
             // Act
-            // Read the file and display it line by line.  
-            foreach (string logLine in File.ReadLines(logFilePath))
-            {
-                if (!string.IsNullOrWhiteSpace(logLine))
-                    service.ParseLogLine(logLine);
-            }
+            service.ParseLog(logFilePath);
 
             // Assert
             Assert.AreEqual(3, service.GetTopVisitedUrls(3).Count());
-            Assert.AreEqual("/intranet-analytics/", service.GetTopVisitedUrls(3).ElementAt(0));
-            Assert.AreEqual("http://example.net/faq/", service.GetTopVisitedUrls(3).ElementAt(1));
-            Assert.AreEqual("/this/page/does/not/exist/", service.GetTopVisitedUrls(3).ElementAt(2));
+            Assert.AreEqual("/docs/manage-websites/", service.GetTopVisitedUrls(3).ElementAt(0));
+            Assert.AreEqual("/blog/2018/08/survey-your-opinion-matters/", service.GetTopVisitedUrls(3).ElementAt(1));
+            Assert.AreEqual("http://example.net/blog/category/meta/", service.GetTopVisitedUrls(3).ElementAt(2));
         }
 
         [TestMethod]
@@ -126,18 +101,13 @@ namespace LogFileParser.Tests.ServiceTests
             var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManyDifferentLogLines.log");
 
             // Act
-            // Read the file and display it line by line.  
-            foreach (string logLine in File.ReadLines(logFilePath))
-            {
-                if (!string.IsNullOrWhiteSpace(logLine))
-                    service.ParseLogLine(logLine);
-            }
+            service.ParseLog(logFilePath);
 
             // Assert
             Assert.AreEqual(3, service.GetTopVisitedUrls(3).Count());
             Assert.AreEqual("/docs/manage-websites/", service.GetTopVisitedUrls(3).ElementAt(0));
             Assert.AreEqual("/this/page/does/not/exist/", service.GetTopVisitedUrls(3).ElementAt(1));
-            Assert.AreEqual("/intranet-analytics/", service.GetTopVisitedUrls(3).ElementAt(2));
+            Assert.AreEqual("/blog/2018/08/survey-your-opinion-matters/", service.GetTopVisitedUrls(3).ElementAt(2));
         }
         [TestMethod]
         public void GetTopActiveIpAddresses_OneIpAddress_GetTop3()
@@ -147,12 +117,7 @@ namespace LogFileParser.Tests.ServiceTests
             var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "SingleLogLine.log");
 
             // Act
-            // Read the file and display it line by line.  
-            foreach (string logLine in File.ReadLines(logFilePath))
-            {
-                if (!string.IsNullOrWhiteSpace(logLine))
-                    service.ParseLogLine(logLine);
-            }
+            service.ParseLog(logFilePath);
 
             // Assert
             Assert.AreEqual(1, service.GetTopActiveIpAddresses(3).Count());
@@ -167,18 +132,13 @@ namespace LogFileParser.Tests.ServiceTests
             var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManyDistinctLogLines.log");
 
             // Act
-            // Read the file and display it line by line.  
-            foreach (string logLine in File.ReadLines(logFilePath))
-            {
-                if (!string.IsNullOrWhiteSpace(logLine))
-                    service.ParseLogLine(logLine);
-            }
+            service.ParseLog(logFilePath);
 
             // Assert
             Assert.AreEqual(3, service.GetTopActiveIpAddresses(3).Count());
-            Assert.AreEqual("177.71.128.21", service.GetTopActiveIpAddresses(3).ElementAt(0));
-            Assert.AreEqual("168.41.191.40", service.GetTopActiveIpAddresses(3).ElementAt(1));
-            Assert.AreEqual("168.41.191.42", service.GetTopActiveIpAddresses(3).ElementAt(2));
+            Assert.AreEqual("168.41.191.44", service.GetTopActiveIpAddresses(3).ElementAt(0));
+            Assert.AreEqual("177.71.128.22", service.GetTopActiveIpAddresses(3).ElementAt(1));
+            Assert.AreEqual("168.41.191.43", service.GetTopActiveIpAddresses(3).ElementAt(2));
         }
 
         [TestMethod]
@@ -189,12 +149,7 @@ namespace LogFileParser.Tests.ServiceTests
             var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManyDifferentLogLines.log");
 
             // Act
-            // Read the file and display it line by line.  
-            foreach (string logLine in File.ReadLines(logFilePath))
-            {
-                if (!string.IsNullOrWhiteSpace(logLine))
-                    service.ParseLogLine(logLine);
-            }
+            service.ParseLog(logFilePath);
 
             // Assert
             Assert.AreEqual(3, service.GetTopActiveIpAddresses(3).Count());
