@@ -20,4 +20,13 @@
     <ProjectReference Include="..\LogFileParser\LogFileParser.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ServiceTests\Test Data\ManyDifferentIpAddresses.log">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ServiceTests\Test Data\ManySameIpAddresses.log">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

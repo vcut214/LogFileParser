@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LogFileParser.Services
@@ -19,10 +20,26 @@ namespace LogFileParser.Services
         private Dictionary<string, int> _ipAddressCounts;
         private Dictionary<string, int> _urlCounts;
 
+        private const string IpAddressRegex = "^(\\d+\\.){3}\\d+";
+
         public LogStatisticsService()
         {
             _ipAddressCounts = new Dictionary<string, int>();
             _urlCounts = new Dictionary<string, int>();
+        }
+
+        public void ParseLogLine(string logLineString)
+        {
+            string ipAddress = Regex.Match(logLineString, IpAddressRegex).Value;
+            if (!_ipAddressCounts.ContainsKey(ipAddress))
+                _ipAddressCounts.Add(ipAddress, 0);
+
+            _ipAddressCounts[ipAddress]++;
+        }
+
+        public int GetNumberOfDistinctIpAddresses()
+        {
+            return _ipAddressCounts.Keys.Count;
         }
     }
 }
