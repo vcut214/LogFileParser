@@ -57,12 +57,26 @@ namespace LogFileParser.Services
         /// For URLs that have the same ranking, the earliest accessed URL will be used.
         /// </summary>
         /// <param name="numberOfUrlsToSelect"></param>
-        /// <returns>List of URLs ranked by number of visits</returns>
+        /// <returns>List of URLs ranked by number of instances in the log file</returns>
         public IEnumerable<string> GetTopVisitedUrls(int numberOfUrlsToSelect)
         {
             var orderedUrlCounts = _urlCounts.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
             return orderedUrlCounts.Select(x => x.Key).Take(numberOfUrlsToSelect);
+        }
+
+        /// <summary>
+        /// Gets the top X most active IP addresses in the log file.
+        /// 
+        /// For IP addresses that have the same ranking, the earliest IP addresses will be used.
+        /// </summary>
+        /// <param name="numberOfUrlsToSelect"></param>
+        /// <returns>List of IP addresses ranked by number of instances in the log file</returns>
+        public IEnumerable<string> GetTopActiveIpAddresses(int numberOfIpAddressesToSelect)
+        {
+            var orderedIpAddressCounts = _ipAddressCounts.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+
+            return orderedIpAddressCounts.Select(x => x.Key).Take(numberOfIpAddressesToSelect);
         }
     }
 }

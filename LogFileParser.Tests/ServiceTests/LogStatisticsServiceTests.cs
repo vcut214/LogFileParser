@@ -139,5 +139,69 @@ namespace LogFileParser.Tests.ServiceTests
             Assert.AreEqual("/this/page/does/not/exist/", service.GetTopVisitedUrls(3).ElementAt(1));
             Assert.AreEqual("/intranet-analytics/", service.GetTopVisitedUrls(3).ElementAt(2));
         }
+        [TestMethod]
+        public void GetTopActiveIpAddresses_OneIpAddress_GetTop3()
+        {
+            // Arrange
+            var service = new LogStatisticsService();
+            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "SingleLogLine.log");
+
+            // Act
+            // Read the file and display it line by line.  
+            foreach (string logLine in File.ReadLines(logFilePath))
+            {
+                if (!string.IsNullOrWhiteSpace(logLine))
+                    service.ParseLogLine(logLine);
+            }
+
+            // Assert
+            Assert.AreEqual(1, service.GetTopActiveIpAddresses(3).Count());
+            Assert.AreEqual("168.41.191.40", service.GetTopActiveIpAddresses(3).FirstOrDefault());
+        }
+
+        [TestMethod]
+        public void GetTopActiveIpAddresses_ManyIpAddressesSameRanking_GetTop3()
+        {
+            // Arrange
+            var service = new LogStatisticsService();
+            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManyDistinctLogLines.log");
+
+            // Act
+            // Read the file and display it line by line.  
+            foreach (string logLine in File.ReadLines(logFilePath))
+            {
+                if (!string.IsNullOrWhiteSpace(logLine))
+                    service.ParseLogLine(logLine);
+            }
+
+            // Assert
+            Assert.AreEqual(3, service.GetTopActiveIpAddresses(3).Count());
+            Assert.AreEqual("177.71.128.21", service.GetTopActiveIpAddresses(3).ElementAt(0));
+            Assert.AreEqual("168.41.191.40", service.GetTopActiveIpAddresses(3).ElementAt(1));
+            Assert.AreEqual("168.41.191.42", service.GetTopActiveIpAddresses(3).ElementAt(2));
+        }
+
+        [TestMethod]
+        public void GetTopActiveIpAddresses_ManyIpAddressesDifferentRanking_GetTop3()
+        {
+            // Arrange
+            var service = new LogStatisticsService();
+            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), TestDataSubdirectory, "ManyDifferentLogLines.log");
+
+            // Act
+            // Read the file and display it line by line.  
+            foreach (string logLine in File.ReadLines(logFilePath))
+            {
+                if (!string.IsNullOrWhiteSpace(logLine))
+                    service.ParseLogLine(logLine);
+            }
+
+            // Assert
+            Assert.AreEqual(3, service.GetTopActiveIpAddresses(3).Count());
+            Assert.AreEqual("168.41.191.40", service.GetTopActiveIpAddresses(3).ElementAt(0));
+            Assert.AreEqual("177.71.128.21", service.GetTopActiveIpAddresses(3).ElementAt(1));
+            Assert.AreEqual("168.41.191.41", service.GetTopActiveIpAddresses(3).ElementAt(2));
+        }
+
     }
 }
